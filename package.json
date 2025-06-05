@@ -24,12 +24,12 @@
   "license": "MIT",
   "description": "Weather MCP Server",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.7.0",
-    "zod": "^3.24.2"
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.25.51"
   },
   "devDependencies": {
-    "@types/node": "^22.13.10",
-    "shx": "^0.3.4",
-    "typescript": "^5.8.2"
+    "@types/node": "^22.15.29",
+    "shx": "^0.4.0",
+    "typescript": "^5.8.3"
   }
 }
