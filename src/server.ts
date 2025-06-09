@@ -4,65 +4,70 @@ import { z } from "zod";
 export function createServer(): McpServer {
   const server = new McpServer({
     name: "Weather MCP Server",
-    version: "1.0.0",
+    version: "1.0.0"
   });
-
-
-  server.resource(
-    'greeting',
-    new ResourceTemplate("greeting://{name}", { list: undefined }),
-    async (uri, { name }) => {
-      return {
-        contents: [{
-          uri: uri.href,
-          text: `Hello, ${name}!`
-        }]
-      };
-    }
-  );
 
   server.tool(
     "weatherTool",
-    "Get weather info for a given city.",
     {
       city: z.string().describe("city name"),
     },
     async ({ city }) => {
       if (!city) {
-        throw new Error("city name is required.");
+        return {
+          content: [
+            {
+              type: "text",
+              text: "Please provide a city name.",
+            },
+          ],
+        };
       }
-
-      const weather = await getWeather(city);
+      const weatherData = await getWeather(city);
 
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(weather, null, 2),
+            text: `The weather in ${weatherData.location} is currently ${weatherData.temperature}°C with ${weatherData.condition}.`,
           },
         ],
       };
     },
   );
 
-  server.tool(
-    "forecastTool",
-    {
-      location: z.string().describe("location name"),
-      days: z.number().default(3).describe("number of days for forecast"),
-    },
-    async ({ location, days }) => {
-      const forecast = await getForecastData(location, days);
+  // Add an addition tool
+  server.tool("add",
+    { a: z.number(), b: z.number() },
+    async ({ a, b }) => ({
+      content: [{ type: "text", text: String(a + b) }]
+    })
+  );
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: `${days}-day forecast for ${location}: ${JSON.stringify(forecast)}`
-          }
-        ]
-      };
-    }
+  // Add a dynamic greeting resource
+  server.resource(
+    "file",
+    new ResourceTemplate("file://{path}", { list: undefined }),
+    async (uri, { path }) => ({
+      contents: [{
+        uri: uri.href,
+        text: `File, ${path}!`
+      }]
+    })
+  );
+
+  server.prompt(
+    "review-code",
+    { code: z.string() },
+    ({ code }) => ({
+      messages: [{
+        role: "user",
+        content: {
+          type: "text",
+          text: `Please review this code:\n\n${code}`
+        }
+      }]
+    })
   );
 
   return server;

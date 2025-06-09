@@ -8,14 +8,12 @@
   "scripts": {
     "build": "tsc && shx chmod +x dist/index.js",
     "watch": "tsc --watch",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/index.js",
+    "client": "node ./dist/client.js",
+    "inspector": "npx @modelcontextprotocol/inspector node build/index.js"
   },
-  "files": [
-    "dist"
-  ],
-  "keywords": [
-    "mcp"
-  ],
+  "files": ["dist"],
+  "keywords": ["mcp"],
   "repository": {
     "type": "git",
     "url": ""
